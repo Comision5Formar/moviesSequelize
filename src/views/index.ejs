@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
+ <%- include('partials/head')  %> 
   <body>
+    <%- include('partials/header')  %> 
+
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <ul>
@@ -23,5 +22,7 @@
     <input type="text" name="buscar" placeholder="buscá la peliii">
     <button type="submit">Buscar</button>
     </form>
+    <%- include('partials/footer')  %> 
+
   </body>
 </html>

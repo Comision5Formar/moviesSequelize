@@ -1,5 +1,6 @@
 const db = require("../database/models");
 const { Op} = require("sequelize");
+const {validationResult} = require('express-validator')
 
 const moment = require("moment");
 moment.locale("es");
@@ -53,20 +54,40 @@ module.exports = {
     },
     store: (req, res) => {
         const { title, rating, awards, release_date, length, genre_id } = req.body;
+        const errors = validationResult(req)
 
-        db.Peliculas.create({
-            title,
-            rating,
-            awards,
-            release_date,
-            length,
-            genre_id
-        })
-            .then((newPeli) => {
-                console.log(newPeli);
-                res.redirect("/peliculas/listar");
+        if(errors.isEmpty()){
+            db.Peliculas.create({
+                title,
+                rating,
+                awards,
+                release_date,
+                length,
+                genre_id
             })
-            .catch((error) => res.send(error));
+                .then((newPeli) => {
+                    console.log(newPeli);
+                    res.redirect("/peliculas/listar");
+                })
+                .catch((error) => res.send(error));
+        }else{
+            db.Generos.findAll({
+                order: [
+                    ['name', 'ASC']
+                ]
+            })
+                .then(generos => {
+                    return res.render('moviesAdd',{
+                        errors : errors.mapped(),
+                        old : req.body,
+                        generos
+                    })
+                })
+                .catch(error => res.send(error))
+           
+        }
+
+       
     },
     edit: (req, res) => {
         let pelicula = db.Peliculas.findByPk(req.params.id);
